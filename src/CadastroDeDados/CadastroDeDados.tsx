@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDados } from "../context/DadosContext";
 import { v4 as uuidv4 } from "uuid";
+import { useDados } from "../Context/DadosContext";
+import logo from "../assets/logo.png";
 import "./CadastroDeDados.css";
 
 export const CadastroDeDados: React.FC = () => {
@@ -14,40 +15,97 @@ export const CadastroDeDados: React.FC = () => {
     descricao: "",
     dataHora: "",
     status: "",
-    tipo: "Manutenção" as "Manutenção" | "Limpeza",
+    tipo: "Manutenção",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    adicionar({ ...form, id: uuidv4() });
-    navigate("/pesquisa");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    const novaTarefa = { ...form, id: uuidv4() };
+    adicionar(novaTarefa);
+    navigate("/pesquisar");
   };
 
   return (
     <div className="cadastro-container">
-      <h2>Cadastro de Dados</h2>
-      <form className="form" onSubmit={handleSubmit}>
-        <input placeholder="Número do Quarto" value={form.numero} onChange={(e) => setForm({ ...form, numero: e.target.value })} />
-        <input placeholder="Funcionário" value={form.funcionario} onChange={(e) => setForm({ ...form, funcionario: e.target.value })} />
-        <input type="datetime-local" value={form.dataHora} onChange={(e) => setForm({ ...form, dataHora: e.target.value })} />
-        <input placeholder="Descrição" value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
-        <select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
-          <option value="">Status</option>
-          <option value="Pendente">Pendente</option>
-          <option value="Concluído">Concluído</option>
-        </select>
+      <div className="header-area">
+        <img src={logo} alt="HotelEase Logo" className="logo-central" />
+        <button className="btn-voltar" onClick={() => navigate("/")}>
+          Voltar à Home
+        </button>
+      </div>
+
+      <div className="form-box">
+        <h2>Cadastro De Dados</h2>
+        <div className="input-row">
+          <input
+            placeholder="Número do Quarto"
+            name="numero"
+            value={form.numero}
+            onChange={handleChange}
+          />
+          <input
+            placeholder="Funcionário"
+            name="funcionario"
+            value={form.funcionario}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="input-row">
+          <input
+            placeholder="Descrição"
+            name="descricao"
+            value={form.descricao}
+            onChange={handleChange}
+          />
+          <input
+            placeholder="Data e Hora"
+            name="dataHora"
+            value={form.datahora}
+            onChange={handleChange}
+            type="datetime-local"
+          />
+        </div>
+
+        <input
+          placeholder="Status"
+          name="status"
+          value={form.status}
+          onChange={handleChange}
+          className="single-input"
+        />
+
         <div className="radio-group">
+          <label>Tipo de Tarefa:</label>
           <label>
-            <input type="radio" name="tipo" checked={form.tipo === "Manutenção"} onChange={() => setForm({ ...form, tipo: "Manutenção" })} />
+            <input
+              type="radio"
+              value="Manutenção"
+              name="tipo"
+              checked={form.tipo === "Manutenção"}
+              onChange={handleChange}
+            />
             Manutenção
           </label>
           <label>
-            <input type="radio" name="tipo" checked={form.tipo === "Limpeza"} onChange={() => setForm({ ...form, tipo: "Limpeza" })} />
+            <input
+              type="radio"
+              value="Limpeza"
+              name="tipo"
+              checked={form.tipo === "Limpeza"}
+              onChange={handleChange}
+            />
             Limpeza
           </label>
         </div>
-        <button type="submit">Salvar</button>
-      </form>
+
+        <button className="btn-salvar" onClick={handleSubmit}>
+          Salvar
+        </button>
+      </div>
     </div>
   );
 };

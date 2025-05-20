@@ -1,47 +1,142 @@
-.pesquisa-container {
-  padding: 40px;
+/* :root {
+  --azul-escuro: #3c537c;
+  --cinza-claro: #eeeeee;
+  --cinza-medio: #444;
+  --branco: #ffffff;
+} */
+
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: var(--azul-escuro);
 }
 
-.filtros {
+.pesquisa-container {
+  padding: 40px 20px;
+  color: var(--branco);
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-area {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: center;
+  position: relative;
   margin-bottom: 20px;
 }
 
-input {
-  padding: 6px;
+.logo-central {
+  height: 80px;
+}
+
+.btn-voltar {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  background-color: var(--branco);
+  color: var(--azul-escuro);
+  font-weight: 600;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-voltar:hover {
+  background-color: #dddddd;
+}
+
+h2 {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.filtro-wrapper {
+  background-color: #4a6ca1;
+  border-radius: 20px;
+  padding: 30px;
+  width: 100%;
+  max-width: 1100px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.filtro-wrapper input,
+.filtro-wrapper select {
+  background-color: #2e3c5a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  width: 220px;
+}
+
+.tabela-wrapper {
+  background-color: #2e2e2e;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 20px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+th,
+td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+th {
+  background-color: #444;
+  color: #ccc;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #3a3a3a;
+}
+
+.status-limpeza {
+  background-color: limegreen;
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.status-manutencao {
+  background-color: darkblue;
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 button {
   background-color: #3c537c;
   color: white;
   border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 8px 16px;
   cursor: pointer;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead {
-  background-color: #eee;
-}
-
-th, td {
-  padding: 8px;
-  border: 1px solid #ccc;
-}
-
-.tag {
-  padding: 4px 8px;
-  border-radius: 5px;
-  background-color: green;
-  color: white;
-}
-
-.tag.blue {
-  background-color: #3c537c;
+button:hover {
+  background-color: #5a79a3;
 }

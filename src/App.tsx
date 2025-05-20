@@ -4,7 +4,7 @@ import { Home } from "./Home/Home";
 import { CadastroDeDados } from "./CadastroDeDados/CadastroDeDados";
 import { PesquisaDeDados } from "./PesquisaDeDados/PesquisaDeDados";
 import { AtualizacaoDeDados } from "./AtualizacaoDeDados/AtualizacaoDeDados";
-import { DadosProvider } from "./context/DadosContext";
+import { DadosProvider } from "./Context/DadosContext";
 
 function App() {
   return (
