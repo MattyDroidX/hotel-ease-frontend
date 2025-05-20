@@ -1,0 +1,47 @@
+.pesquisa-container {
+  padding: 40px;
+}
+
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 6px;
+}
+
+button {
+  background-color: #3c537c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #eee;
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.tag {
+  padding: 4px 8px;
+  border-radius: 5px;
+  background-color: green;
+  color: white;
+}
+
+.tag.blue {
+  background-color: #3c537c;
+}

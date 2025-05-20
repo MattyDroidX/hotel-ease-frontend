@@ -1,0 +1,31 @@
+.atualizacao-container {
+  padding: 40px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.radio-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+button {
+  background-color: #3c537c;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
