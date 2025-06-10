@@ -24,7 +24,7 @@ export const CadastroDeDados: React.FC = () => {
 
   const handleSubmit = () => {
     const novaTarefa = { ...form, id: uuidv4() };
-    adicionar(novaTarefa);
+    // adicionar(novaTarefa);
     navigate("/pesquisar");
   };
 
@@ -64,7 +64,7 @@ export const CadastroDeDados: React.FC = () => {
           <input
             placeholder="Data e Hora"
             name="dataHora"
-            value={form.datahora}
+            value={form.dataHora}
             onChange={handleChange}
             type="datetime-local"
           />
