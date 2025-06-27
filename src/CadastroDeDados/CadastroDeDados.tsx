@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useDados } from "../Context/DadosContext";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo-dark.png";
 import "./CadastroDeDados.css";
 
 export const CadastroDeDados: React.FC = () => {
@@ -14,24 +14,28 @@ export const CadastroDeDados: React.FC = () => {
     funcionario: "",
     descricao: "",
     dataHora: "",
-    status: "",
+    status: "Em Aberto",
     tipo: "Manutenção",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = () => {
-    const novaTarefa = { ...form, id: uuidv4() };
-    // adicionar(novaTarefa);
-    navigate("/pesquisar");
+    const novaTarefa = {
+      ...form,
+      id: uuidv4(),
+      tipo: form.tipo as "Manutenção" | "Limpeza",
+    };
+    adicionar(novaTarefa);
+    navigate("/pesquisa");
   };
 
   return (
     <div className="cadastro-container">
       <div className="header-area">
-        <img src={logo} alt="HotelEase Logo" className="logo-central" />
+        <img src={logo} alt="HotelEase Logo" className="logo-central" onClick={() => navigate("/")} />
         <button className="btn-voltar" onClick={() => navigate("/")}>
           Voltar à Home
         </button>
@@ -39,6 +43,7 @@ export const CadastroDeDados: React.FC = () => {
 
       <div className="form-box">
         <h2>Cadastro De Dados</h2>
+
         <div className="input-row">
           <input
             placeholder="Número do Quarto"
@@ -62,21 +67,21 @@ export const CadastroDeDados: React.FC = () => {
             onChange={handleChange}
           />
           <input
-            placeholder="Data e Hora"
+            type="datetime-local"
             name="dataHora"
             value={form.dataHora}
             onChange={handleChange}
-            type="datetime-local"
           />
         </div>
 
-        <input
-          placeholder="Status"
-          name="status"
-          value={form.status}
-          onChange={handleChange}
-          className="single-input"
-        />
+        <div className="input-row">
+          <select name="status" value={form.status} onChange={handleChange}>
+            <option value="Em Aberto">Em Aberto</option>
+            <option value="Em Procedimento">Em Procedimento</option>
+            <option value="Com complicacoes">Com Complicações</option>
+            <option value="Concluído">Concluído</option>
+          </select>
+        </div>
 
         <div className="radio-group">
           <label>Tipo de Tarefa:</label>

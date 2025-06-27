@@ -1,28 +1,34 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
 import "./Home.css";
-import logo from "./logo.png";
-import { Link } from "react-router-dom";
 
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="home-container">
-      <header className="home-header">
-        <img src={logo} alt="HotelEase logo" className="logo" />
-        <h1 className="title">GESTÃO DE HOTEIS</h1>
-        <p className="description">
-          Um sistema CRUD para gestão hoteleira centraliza e organiza tarefas de manutenção e
-          limpeza dos quartos, resolvendo problemas de inconsistências de dados, comunicação
-          ineficiente e falta de transparência.
-        </p>
-      </header>
+      <img src={logo} alt="HotelEase Logo" className="logo-topo" />
 
-      <div className="buttons">
-        <Link to="/cadastro"><button>CADASTRO DE DADOS</button></Link>
-        <Link to="/pesquisa"><button>PESQUISA DE DADOS</button></Link>
-        <Link to="/atualizacao"><button>ATUALIZAÇÃO DE DADOS</button></Link>
+      <div className="content-wrapper">
+        <div className="text-section">
+          <h1 className="title">GESTÃO DE HOTEIS</h1>
+          <p className="subtitle">
+            Um sistema CRUD para gestão hoteleira centraliza e organiza tarefas
+            de manutenção e limpeza dos quartos, resolvendo problemas de
+            inconsistências de dados, comunicação ineficiente e falta de
+            transparência.
+          </p>
+        </div>
+
+        <div className="button-section">
+          <button onClick={() => navigate("/cadastro")}>CADASTRO DE DADOS</button>
+          <button onClick={() => navigate("/pesquisa")}>PESQUISA DE DADOS</button>
+          <button onClick={() => navigate("/atualizacao")}>ATUALIZAÇÃO DE DADOS</button>
+        </div>
       </div>
 
-      <footer className="footer" />
+      <footer className="footer-home" />
     </div>
   );
 };

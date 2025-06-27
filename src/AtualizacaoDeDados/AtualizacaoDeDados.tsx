@@ -1,25 +1,141 @@
-import React from "react";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDados } from "../Context/DadosContext";
+import logo from "../assets/logo-dark.png";
 import "./AtualizacaoDeDados.css";
 
 export const AtualizacaoDeDados: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { atualizar } = useDados();
+  const tarefa = location.state;
+
+  const [form, setForm] = useState({
+    id: tarefa?.id || "",
+    numero: tarefa?.numero || "",
+    funcionario: tarefa?.funcionario || "",
+    dataHora: tarefa?.dataHora || "",
+    descricao: tarefa?.descricao || "",
+    status: tarefa?.status || "Em Aberto",
+    tipo: tarefa?.tipo || "Manutenção",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    atualizar({
+      ...form,
+      tipo: form.tipo as "Manutenção" | "Limpeza",
+    });
+    navigate("/pesquisa");
+  };
+
   return (
     <div className="atualizacao-container">
-      <h2>Atualização de Dados</h2>
-      <form className="form">
-        <input type="text" value="101" placeholder="Número do Quarto" />
-        <input type="text" value="Maria" placeholder="Funcionário" />
-        <input type="datetime-local" value="2024-06-01T10:00" />
-        <input type="text" value="Limpeza completa" />
-        <select defaultValue="pendente">
-          <option value="pendente">Pendente</option>
-          <option value="concluido">Concluído</option>
-        </select>
-        <div className="radio-group">
-          <label><input type="radio" name="tipo" defaultChecked /> Manutenção</label>
-          <label><input type="radio" name="tipo" /> Limpeza</label>
-        </div>
-        <button type="submit">Atualizar</button>
-      </form>
+      <div className="header-area">
+        <img src={logo} alt="HotelEase Logo" className="logo-central" onClick={() => navigate("/")} />
+        <button className="btn-voltar" onClick={() => navigate("/")}>
+          Voltar à Home
+        </button>
+      </div>
+
+      <div className="form-box">
+        <h2>Atualização De Dados</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="input-row">
+            <div className="input-group">
+              <label htmlFor="numero">Número do Quarto:</label>
+              <input
+                id="numero"
+                name="numero"
+                value={form.numero}
+                onChange={handleChange}
+                placeholder="Ex: 101"
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="funcionario">Nome do Funcionário:</label>
+              <input
+                id="funcionario"
+                name="funcionario"
+                value={form.funcionario}
+                onChange={handleChange}
+                placeholder="Ex: João"
+              />
+            </div>
+          </div>
+
+          <div className="input-row">
+            <div className="input-group">
+              <label htmlFor="dataHora">Data e Hora:</label>
+              <input
+                id="dataHora"
+                name="dataHora"
+                type="datetime-local"
+                value={form.dataHora}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="descricao">Descrição da Tarefa:</label>
+              <input
+                id="descricao"
+                name="descricao"
+                value={form.descricao}
+                onChange={handleChange}
+                placeholder="Ex: Consertar ar-condicionado"
+              />
+            </div>
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="status">Status da Tarefa:</label>
+            <select
+              id="status"
+              name="status"
+              value={form.status}
+              onChange={handleChange}
+              className="single-input"
+            >
+              <option value="Em Aberto">Em Aberto</option>
+              <option value="Em Procedimento">Em Procedimento</option>
+              <option value="Com Complicações">Com Complicações</option>
+              <option value="Concluído">Concluído</option>
+            </select>
+          </div>
+
+          <div className="radio-group">
+            <label>Tipo de Tarefa:</label>
+            <label>
+              <input
+                type="radio"
+                value="Manutenção"
+                name="tipo"
+                checked={form.tipo === "Manutenção"}
+                onChange={handleChange}
+              />
+              Manutenção
+            </label>
+            <label>
+              <input
+                type="radio"
+                value="Limpeza"
+                name="tipo"
+                checked={form.tipo === "Limpeza"}
+                onChange={handleChange}
+              />
+              Limpeza
+            </label>
+          </div>
+
+          <button className="btn-salvar" type="submit">
+            Salvar Alterações
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

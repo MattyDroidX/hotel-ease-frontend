@@ -14,6 +14,7 @@ type ContextType = {
   tarefas: Tarefa[];
   adicionar: (tarefa: Tarefa) => void;
   remover: (id: string) => void;
+  atualizar: (tarefa: Tarefa) => void;
 };
 
 const DadosContext = createContext<ContextType | undefined>(undefined);
@@ -35,8 +36,14 @@ export const DadosProvider = ({ children }: { children: ReactNode }) => {
     setTarefas((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const atualizar = (tarefaAtualizada: Tarefa) => {
+    setTarefas((prev) =>
+      prev.map((t) => (t.id === tarefaAtualizada.id ? tarefaAtualizada : t))
+    );
+  };
+
   return (
-    <DadosContext.Provider value={{ tarefas, adicionar, remover }}>
+    <DadosContext.Provider value={{ tarefas, adicionar, remover, atualizar }}>
       {children}
     </DadosContext.Provider>
   );

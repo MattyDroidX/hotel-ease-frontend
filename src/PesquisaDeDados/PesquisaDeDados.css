@@ -21,7 +21,7 @@ body {
 
 .header-area {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1400px;
   display: flex;
   justify-content: center;
   position: relative;
@@ -50,6 +50,19 @@ body {
   background-color: #dddddd;
 }
 
+.botao-duplo {
+  position: absolute;
+  right: 0;
+  top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.botao-duplo .btn-voltar {
+  position: static;
+}
+
+
 h2 {
   margin-top: 10px;
   margin-bottom: 30px;
@@ -61,7 +74,7 @@ h2 {
   border-radius: 20px;
   padding: 30px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1400px;
   margin-bottom: 40px;
   display: flex;
   flex-wrap: wrap;
@@ -84,7 +97,7 @@ h2 {
   border-radius: 20px;
   overflow: hidden;
   padding: 20px;
-  max-width: 1100px;
+  max-width: 1400px;
   width: 100%;
 }
 
@@ -138,5 +151,56 @@ button {
 }
 
 button:hover {
-  background-color: #5a79a3;
+  background-color: #3C537C;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
+.filtro-wrapper input,
+.filtro-wrapper select {
+  background-color: #2e3c5a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  width: 220px;
+}
+
+.status-tag {
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Tipos */
+.status-limpeza {
+  background-color: limegreen;
+}
+
+.status-manutencao {
+  background-color: darkblue;
+}
+
+/* Status */
+.status-tag.em-aberto {
+  background-color: #ff9800;
+}
+
+.status-tag.em-procedimento {
+  background-color: #009688;
+}
+
+.status-tag.com-complicacoes {
+  background-color: #e53935;
+}
+
+.status-tag.concluído,
+.status-tag.concluido {
+  background-color: #4caf50;
 }
