@@ -1,10 +1,10 @@
 import React from "react";
-import "./PesquisaDeDados.css";
+import "./PesquisaDeTarefas.css";
 import { useDados } from "../Context/DadosContext";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-dark.png";
 
-export const PesquisaDeDados: React.FC = () => {
+export const PesquisaDeTarefas: React.FC = () => {
   const { tarefas, remover } = useDados();
   const navigate = useNavigate();
 
@@ -49,23 +49,31 @@ export const PesquisaDeDados: React.FC = () => {
             Voltar à Home
           </button>
           <button className="btn-voltar" onClick={() => navigate("/cadastro")}>
-            Adicionar novo registro
+            Adicionar novo registro de Tarefa
           </button>
         </div>
       </div>
 
-      <h2>Pesquisa De Dados</h2>
+      <h2>Pesquisa De Tarefas</h2>
       <div className="filtro-wrapper">
         <input
           placeholder="Busca..."
           value={filtros.busca}
           onChange={(e) => setFiltros({ ...filtros, busca: e.target.value })}
         />
-        <input
-          placeholder="Funcionário"
+        <select
           value={filtros.funcionario}
           onChange={(e) => setFiltros({ ...filtros, funcionario: e.target.value })}
-        />
+        >
+          <option value="">Todos os Funcionários</option>
+          {useDados().funcionarios
+            .filter(f => f.ativo)
+            .map((f) => (
+              <option key={f.id} value={`${f.nome} ${f.sobrenome}`}>
+                {f.nome} {f.sobrenome}
+              </option>
+            ))}
+        </select>
         <select
           value={filtros.tipo}
           onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
@@ -81,7 +89,7 @@ export const PesquisaDeDados: React.FC = () => {
           <option value="">Status</option>
           <option value="Em Aberto">Em Aberto</option>
           <option value="Em Procedimento">Em Procedimento</option>
-          <option value="Com Complicações">Com Complicações</option>
+          <option value="Com Complicacoes">Com Complicacoes</option>
           <option value="Concluído">Concluído</option>
         </select>
         <input

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
+// ---------- TIPOS ----------
 export type Tarefa = {
   id: string;
   numero: string;
@@ -10,11 +11,29 @@ export type Tarefa = {
   tipo: "Manutenção" | "Limpeza";
 };
 
+export type Funcionario = {
+  id: string;
+  nome: string;
+  sobrenome: string;
+  email: string;
+  telefone: string;
+  cargo: string;
+  ativo: boolean;
+};
+
+// ---------- CONTEXTO ----------
 type ContextType = {
+  // Tarefas
   tarefas: Tarefa[];
   adicionar: (tarefa: Tarefa) => void;
   remover: (id: string) => void;
   atualizar: (tarefa: Tarefa) => void;
+
+  // Funcionários
+  funcionarios: Funcionario[];
+  adicionarFuncionario: (funcionario: Funcionario) => void;
+  removerFuncionario: (id: string) => void;
+  atualizarFuncionario: (f: Funcionario) => void;
 };
 
 const DadosContext = createContext<ContextType | undefined>(undefined);
@@ -25,9 +44,12 @@ export const useDados = () => {
   return context;
 };
 
+// ---------- PROVIDER ----------
 export const DadosProvider = ({ children }: { children: ReactNode }) => {
   const [tarefas, setTarefas] = useState<Tarefa[]>([]);
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
 
+  // TAREFAS
   const adicionar = (tarefa: Tarefa) => {
     setTarefas((prev) => [...prev, tarefa]);
   };
@@ -42,8 +64,34 @@ export const DadosProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  // FUNCIONÁRIOS
+  const adicionarFuncionario = (funcionario: Funcionario) => {
+    setFuncionarios((prev) => [...prev, funcionario]);
+  };
+
+  const removerFuncionario = (id: string) => {
+    setFuncionarios((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  const atualizarFuncionario = (funcionarioAtualizado: Funcionario) => {
+  setFuncionarios((prev) =>
+    prev.map((f) => (f.id === funcionarioAtualizado.id ? funcionarioAtualizado : f))
+  );
+};
+
   return (
-    <DadosContext.Provider value={{ tarefas, adicionar, remover, atualizar }}>
+    <DadosContext.Provider
+      value={{
+        tarefas,
+        adicionar,
+        remover,
+        atualizar,
+        funcionarios,
+        adicionarFuncionario,
+        removerFuncionario,
+        atualizarFuncionario,
+      }}
+    >
       {children}
     </DadosContext.Provider>
   );

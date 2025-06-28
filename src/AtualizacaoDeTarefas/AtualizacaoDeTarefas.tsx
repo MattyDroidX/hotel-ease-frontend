@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDados } from "../Context/DadosContext";
 import logo from "../assets/logo-dark.png";
-import "./AtualizacaoDeDados.css";
+import "./AtualizacaoDeTarefas.css";
 
-export const AtualizacaoDeDados: React.FC = () => {
+export const AtualizacaoDeTarefas: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { atualizar } = useDados();
@@ -20,17 +20,36 @@ export const AtualizacaoDeDados: React.FC = () => {
     tipo: tarefa?.tipo || "Manutenção",
   });
 
+  const [erros, setErros] = useState<{ [campo: string]: string }>({});
+  const [mensagem, setMensagem] = useState<string | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErros((prev) => ({ ...prev, [name]: "" }));
+    setMensagem(null);
+  };
+
+  const validar = () => {
+    const novosErros: { [campo: string]: string } = {};
+    if (!form.numero.trim()) novosErros.numero = "Número do quarto é obrigatório.";
+    if (!form.funcionario.trim()) novosErros.funcionario = "Funcionário é obrigatório.";
+    if (!form.dataHora) novosErros.dataHora = "Data e hora são obrigatórias.";
+    if (!form.descricao.trim()) novosErros.descricao = "Descrição é obrigatória.";
+    setErros(novosErros);
+    return Object.keys(novosErros).length === 0;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validar()) return;
+
     atualizar({
       ...form,
       tipo: form.tipo as "Manutenção" | "Limpeza",
     });
-    navigate("/pesquisa");
+    setMensagem("✅ Tarefa atualizada com sucesso!");
+    setTimeout(() => navigate("/pesquisa"), 1500);
   };
 
   return (
@@ -54,6 +73,7 @@ export const AtualizacaoDeDados: React.FC = () => {
                 value={form.numero}
                 onChange={handleChange}
                 placeholder="Ex: 101"
+                className={erros.numero ? "input-erro" : ""}
               />
             </div>
             <div className="input-group">
@@ -64,6 +84,7 @@ export const AtualizacaoDeDados: React.FC = () => {
                 value={form.funcionario}
                 onChange={handleChange}
                 placeholder="Ex: João"
+                className={erros.funcionario ? "input-erro" : ""}
               />
             </div>
           </div>
@@ -77,6 +98,7 @@ export const AtualizacaoDeDados: React.FC = () => {
                 type="datetime-local"
                 value={form.dataHora}
                 onChange={handleChange}
+                className={erros.dataHora ? "input-erro" : ""}
               />
             </div>
             <div className="input-group">
@@ -87,6 +109,7 @@ export const AtualizacaoDeDados: React.FC = () => {
                 value={form.descricao}
                 onChange={handleChange}
                 placeholder="Ex: Consertar ar-condicionado"
+                className={erros.descricao ? "input-erro" : ""}
               />
             </div>
           </div>
@@ -102,7 +125,7 @@ export const AtualizacaoDeDados: React.FC = () => {
             >
               <option value="Em Aberto">Em Aberto</option>
               <option value="Em Procedimento">Em Procedimento</option>
-              <option value="Com Complicações">Com Complicações</option>
+              <option value="Com Complicacoes">Com Complicacoes</option>
               <option value="Concluído">Concluído</option>
             </select>
           </div>
@@ -134,6 +157,15 @@ export const AtualizacaoDeDados: React.FC = () => {
           <button className="btn-salvar" type="submit">
             Salvar Alterações
           </button>
+
+          {/* feedback de erro */}
+          <div className="erros">
+            {Object.values(erros).map((erro, idx) => (
+              <div key={idx} className="erro">{erro}</div>
+            ))}
+          </div>
+
+          {mensagem && <div className="mensagem-feedback">{mensagem}</div>}
         </form>
       </div>
     </div>

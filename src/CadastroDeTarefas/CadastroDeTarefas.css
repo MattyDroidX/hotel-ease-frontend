@@ -167,3 +167,37 @@ select {
 img:hover {
   cursor: pointer;
 }
+
+.input-erro {
+  border: 2px solid #ff4d4f !important;
+  background-color: #3c4c6a !important;
+}
+
+.erros {
+  margin-top: 10px;
+  color: #ffbfbf;
+  font-size: 14px;
+  text-align: center;
+}
+
+.mensagem-feedback {
+  margin-top: 16px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.mensagem-feedback.erro {
+  color: red;
+  margin-top: 10px;
+}
+
+.input-erro {
+  border: 1px solid red;
+}
+.erro {
+  color: red;
+  margin-top: 4px;
+  font-size: 20px;
+}

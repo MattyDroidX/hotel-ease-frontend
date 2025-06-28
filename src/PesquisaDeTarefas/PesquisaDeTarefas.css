@@ -204,3 +204,19 @@ img:hover {
 .status-tag.concluido {
   background-color: #4caf50;
 }
+
+.status-tag.ativo {
+  background-color: #4caf50;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.status-tag.inativo {
+  background-color: #f44336;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+}

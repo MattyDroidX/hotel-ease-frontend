@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useDados } from "../Context/DadosContext";
 import logo from "../assets/logo-dark.png";
-import "./CadastroDeDados.css";
+import "./CadastroDeTarefas.css";
 
-export const CadastroDeDados: React.FC = () => {
-  const { adicionar } = useDados();
+export const CadastroDeTarefas: React.FC = () => {
+  const { adicionar, funcionarios } = useDados();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -18,59 +18,93 @@ export const CadastroDeDados: React.FC = () => {
     tipo: "Manutenção",
   });
 
+  const [erros, setErros] = useState<{ [campo: string]: string }>({});
+  const [mensagem, setMensagem] = useState<string | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    setErros({ ...erros, [name]: "" });
+    setMensagem(null);
+  };
+
+  const validar = () => {
+    const novosErros: { [campo: string]: string } = {};
+    if (!form.numero.trim()) novosErros.numero = "Número do quarto é obrigatório.";
+    if (!form.funcionario) novosErros.funcionario = "Funcionário é obrigatório.";
+    if (!form.descricao.trim()) novosErros.descricao = "Descrição é obrigatória.";
+    if (!form.dataHora) novosErros.dataHora = "Data e hora são obrigatórias.";
+
+    setErros(novosErros);
+    return Object.keys(novosErros).length === 0;
   };
 
   const handleSubmit = () => {
+    if (!validar()) return;
+
     const novaTarefa = {
       ...form,
       id: uuidv4(),
       tipo: form.tipo as "Manutenção" | "Limpeza",
     };
+
     adicionar(novaTarefa);
-    navigate("/pesquisa");
+    setMensagem("✅ Tarefa cadastrada com sucesso!");
+    setTimeout(() => navigate("/pesquisa"), 1500);
   };
 
   return (
     <div className="cadastro-container">
       <div className="header-area">
         <img src={logo} alt="HotelEase Logo" className="logo-central" onClick={() => navigate("/")} />
-        <button className="btn-voltar" onClick={() => navigate("/")}>
-          Voltar à Home
-        </button>
+        <div className="botao-duplo">
+          <button className="btn-voltar" onClick={() => navigate("/")}>Voltar à Home</button>
+          <button className="btn-voltar" onClick={() => navigate("/pesquisa")}>Pesquisa de Tarefas</button>
+        </div>
       </div>
 
       <div className="form-box">
-        <h2>Cadastro De Dados</h2>
+        <h2>Cadastro De Tarefas</h2>
 
         <div className="input-row">
           <input
-            placeholder="Número do Quarto"
             name="numero"
+            placeholder="Número do Quarto"
             value={form.numero}
             onChange={handleChange}
+            className={erros.numero ? "input-erro" : ""}
           />
-          <input
-            placeholder="Funcionário"
+          <select
             name="funcionario"
             value={form.funcionario}
             onChange={handleChange}
-          />
+            className={erros.funcionario ? "input-erro" : ""}
+          >
+            <option value="">Selecione um Funcionário</option>
+            {funcionarios
+              .filter(f => f.ativo)
+              .map((f) => (
+                <option key={f.id} value={`${f.nome} ${f.sobrenome}`}>
+                  {f.nome} {f.sobrenome}
+                </option>
+              ))}
+          </select>
         </div>
 
         <div className="input-row">
           <input
-            placeholder="Descrição"
             name="descricao"
+            placeholder="Descrição"
             value={form.descricao}
             onChange={handleChange}
+            className={erros.descricao ? "input-erro" : ""}
           />
           <input
             type="datetime-local"
             name="dataHora"
             value={form.dataHora}
             onChange={handleChange}
+            className={erros.dataHora ? "input-erro" : ""}
           />
         </div>
 
@@ -78,7 +112,7 @@ export const CadastroDeDados: React.FC = () => {
           <select name="status" value={form.status} onChange={handleChange}>
             <option value="Em Aberto">Em Aberto</option>
             <option value="Em Procedimento">Em Procedimento</option>
-            <option value="Com complicacoes">Com Complicações</option>
+            <option value="Com Complicacoes">Com Complicacoes</option>
             <option value="Concluído">Concluído</option>
           </select>
         </div>
@@ -110,6 +144,15 @@ export const CadastroDeDados: React.FC = () => {
         <button className="btn-salvar" onClick={handleSubmit}>
           Salvar
         </button>
+
+        {/* Feedback de erro */}
+        <div className="erros">
+          {Object.values(erros).map((erro, idx) => (
+            <div key={idx} className="erro">{erro}</div>
+          ))}
+        </div>
+
+        {mensagem && <div className="mensagem-feedback">{mensagem}</div>}
       </div>
     </div>
   );

@@ -22,9 +22,11 @@ export const Home: React.FC = () => {
         </div>
 
         <div className="button-section">
-          <button onClick={() => navigate("/cadastro")}>CADASTRO DE DADOS</button>
-          <button onClick={() => navigate("/pesquisa")}>PESQUISA DE DADOS</button>
-          <button onClick={() => navigate("/atualizacao")}>ATUALIZAÇÃO DE DADOS</button>
+          <button onClick={() => navigate("/cadastro")}>CADASTRO DE TAREFAS</button>
+          <button onClick={() => navigate("/pesquisa")}>PESQUISA DE TAREFAS</button>
+          <button onClick={() => navigate("/cadastro-funcionario")}>CADASTRO DE DADOS DE FUNCIONARIOS</button>
+          <button onClick={() => navigate("/funcionarios")}>FUNCIONÁRIOS</button>
+          
         </div>
       </div>
 
