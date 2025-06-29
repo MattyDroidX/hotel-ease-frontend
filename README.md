@@ -141,6 +141,11 @@ Depois disso, o navegador será aberto automaticamente em:
 
 ```
 http://localhost:3000
+
+ou
+
+http://127.0.0.1:3000/
+
 ```
 
 Se não abrir automaticamente, copie e cole esse link no seu navegador.
