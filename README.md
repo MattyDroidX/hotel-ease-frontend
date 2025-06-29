@@ -109,8 +109,6 @@ cd prominas/hotel-ease-frontend
 
 Depois disso, siga os mesmos passos de instalação das dependências abaixo:
 
-Você receberá um **arquivo .zip** com o código-fonte do projeto. Esse arquivo **não inclui a pasta `node_modules`**, pois ela é muito grande e será reconstruída localmente após a instalação das dependências.
-
 ### Passos para preparar o projeto:
 
 1. Extraia o arquivo `.zip` que foi entregue.
