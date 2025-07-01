@@ -7,11 +7,9 @@ import { ListaFuncionarios } from "./CadastroFuncionario/ListaFuncionarios";
 import { AtualizacaoFuncionario } from "./CadastroFuncionario/AtualizacaoFuncionario";
 import { PesquisaDeTarefas } from "./PesquisaDeTarefas/PesquisaDeTarefas";
 import { AtualizacaoDeTarefas } from "./AtualizacaoDeTarefas/AtualizacaoDeTarefas";
-import { DadosProvider } from "./Context/DadosContext";
 
 function App() {
   return (
-    <DadosProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -23,7 +21,6 @@ function App() {
           <Route path="/atualizar-funcionario" element={<AtualizacaoFuncionario />} />
         </Routes>
       </Router>
-    </DadosProvider>
   );
 }
 
