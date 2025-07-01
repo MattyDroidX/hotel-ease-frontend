@@ -1,14 +1,15 @@
-import React from "react";
+import React, {useEffect, useState } from "react";
 import "./PesquisaDeTarefas.css";
-import { useDados } from "../Context/DadosContext";
+import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-dark.png";
 
 export const PesquisaDeTarefas: React.FC = () => {
-  const { tarefas, remover } = useDados();
   const navigate = useNavigate();
 
-  const [filtros, setFiltros] = React.useState({
+  const [tarefas, setTarefas] = useState<any[]>([]);
+  const [funcionarios, setFuncionarios] = useState<any[]>([]);
+  const [filtros, setFiltros] = useState({
     busca: "",
     funcionario: "",
     status: "",
@@ -16,11 +17,28 @@ export const PesquisaDeTarefas: React.FC = () => {
     dataHora: "",
   });
 
-  const [resultados, setResultados] = React.useState(tarefas);
+  const [resultados, setResultados] = useState(tarefas);
 
-  React.useEffect(() => {
-    setResultados(tarefas);
-  }, [tarefas]);
+  useEffect(() => {
+    // Buscar tarefas
+    api.get("/tarefas")
+      .then(res => {
+        setTarefas(res.data);
+        setResultados(res.data);
+      })
+      .catch(err => {
+        console.error("Erro ao carregar tarefas:", err);
+        alert("Erro ao carregar tarefas");
+      });
+
+    api.get("/funcionarios")
+      .then(res => {
+        setFuncionarios(res.data.filter((f: any) => f.ativo));
+      })
+      .catch(err => {
+        console.error("Erro ao carregar funcionários:", err);
+      });
+  }, []);
 
   const aplicarFiltros = () => {
     const filtradas = tarefas.filter((t) => {
@@ -33,6 +51,20 @@ export const PesquisaDeTarefas: React.FC = () => {
       );
     });
     setResultados(filtradas);
+  };
+
+  const removerTarefa = async (id: string) => {
+    const confirmar = window.confirm("Tem certeza que deseja excluir esta tarefa?");
+    if (!confirmar) return;
+
+    try {
+      await api.delete(`/tarefas/${id}`);
+      setResultados(prev => prev.filter(t => t.id !== id));
+      setTarefas(prev => prev.filter(t => t.id !== id));
+    } catch (err) {
+      console.error("Erro ao excluir tarefa:", err);
+      alert("Erro ao excluir tarefa");
+    }
   };
 
   return (
@@ -66,9 +98,7 @@ export const PesquisaDeTarefas: React.FC = () => {
           onChange={(e) => setFiltros({ ...filtros, funcionario: e.target.value })}
         >
           <option value="">Todos os Funcionários</option>
-          {useDados().funcionarios
-            .filter(f => f.ativo)
-            .map((f) => (
+          {funcionarios.map((f) => (
               <option key={f.id} value={`${f.nome} ${f.sobrenome}`}>
                 {f.nome} {f.sobrenome}
               </option>
@@ -129,14 +159,7 @@ export const PesquisaDeTarefas: React.FC = () => {
                   </span>
                 </td>
                 <td>
-                  <button
-                    onClick={() => {
-                      const confirmado = window.confirm("Tem certeza que deseja excluir este registro?");
-                      if (confirmado) remover(t.id);
-                    }}
-                  >
-                    Excluir
-                  </button>
+                  <button onClick={() => removerTarefa(t.id)}>Excluir</button>
                   <button onClick={() => navigate("/atualizacao", { state: t })}>Atualizar</button>
                 </td>
               </tr>

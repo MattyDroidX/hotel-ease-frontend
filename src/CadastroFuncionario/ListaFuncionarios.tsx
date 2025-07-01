@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../PesquisaDeTarefas/PesquisaDeTarefas.css";
-import { useDados } from "../Context/DadosContext";
 import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 import logo from "../assets/logo-dark.png";
 
+interface Funcionario {
+  id: string;
+  nome: string;
+  sobrenome: string;
+  email: string;
+  telefone: string;
+  cargo: string;
+  ativo: boolean;
+}
+
 export const ListaFuncionarios: React.FC = () => {
-  const { funcionarios, removerFuncionario } = useDados();
   const navigate = useNavigate();
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+  const [resultados, setResultados] = useState<Funcionario[]>([]);
 
   const [filtros, setFiltros] = useState({
     busca: "",
@@ -14,11 +25,17 @@ export const ListaFuncionarios: React.FC = () => {
     ativo: "",
   });
 
-  const [resultados, setResultados] = React.useState(funcionarios);
-
-  React.useEffect(() => {
-    setResultados(funcionarios);
-  }, [funcionarios]);
+useEffect(() => {
+    api.get("/funcionarios")
+      .then((res) => {
+        setFuncionarios(res.data);
+        setResultados(res.data);
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar funcionários:", err);
+        alert("Erro ao carregar funcionários.");
+      });
+  }, []);
 
   const aplicarFiltro = () => {
     const termo = filtros.busca.toLowerCase();
@@ -28,6 +45,20 @@ export const ListaFuncionarios: React.FC = () => {
       (!filtros.ativo || String(f.ativo) === filtros.ativo)
     );
     setResultados(filtrados);
+  };
+
+    const removerFuncionario = async (id: string) => {
+    const confirmar = window.confirm("Tem certeza que deseja excluir este funcionário?");
+    if (!confirmar) return;
+
+    try {
+      await api.delete(`/funcionarios/${id}`);
+      setFuncionarios(prev => prev.filter(f => f.id !== id));
+      setResultados(prev => prev.filter(f => f.id !== id));
+    } catch (err) {
+      console.error("Erro ao remover funcionário:", err);
+      alert("Erro ao remover funcionário.");
+    }
   };
 
   return (
@@ -104,14 +135,7 @@ export const ListaFuncionarios: React.FC = () => {
                   </span>
                 </td>
                 <td>
-                  <button
-                    onClick={() => {
-                      const confirmar = window.confirm("Tem certeza que deseja excluir este funcionário?");
-                      if (confirmar) removerFuncionario(f.id);
-                    }}
-                  >
-                    Excluir
-                  </button>
+                  <button onClick={() => removerFuncionario(f.id)}> Excluir </button>
                   <button onClick={() => navigate("/atualizar-funcionario", { state: f })}>
                     Atualizar
                   </button>

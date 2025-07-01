@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDados } from "../Context/DadosContext";
 import logo from "../assets/logo-dark.png";
 import "../CadastroDeTarefas/CadastroDeTarefas.css";
+import api from "../services/api";
 
 export const AtualizacaoFuncionario: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { atualizarFuncionario } = useDados();
 
   const funcionario = location.state;
 
@@ -45,18 +44,19 @@ export const AtualizacaoFuncionario: React.FC = () => {
     setErros((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validar()) return;
 
     try {
-      atualizarFuncionario(form);
+      await api.put(`/funcionarios/${form.id}`, form);
       setMensagem("✅ Funcionário atualizado com sucesso!");
       setTimeout(() => {
         setMensagem(null);
         navigate("/funcionarios");
       }, 1500);
-    } catch {
+    } catch (error) {
+      console.error("Erro ao atualizar funcionário.", error);
       setMensagem("❌ Erro ao atualizar funcionário.");
     }
   };

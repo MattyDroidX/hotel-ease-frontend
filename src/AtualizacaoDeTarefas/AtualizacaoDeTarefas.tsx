@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDados } from "../Context/DadosContext";
 import logo from "../assets/logo-dark.png";
+import api from "../services/api";
 import "./AtualizacaoDeTarefas.css";
 
 export const AtualizacaoDeTarefas: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { atualizar } = useDados();
   const tarefa = location.state;
 
   const [form, setForm] = useState({
@@ -40,16 +39,18 @@ export const AtualizacaoDeTarefas: React.FC = () => {
     return Object.keys(novosErros).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validar()) return;
 
-    atualizar({
-      ...form,
-      tipo: form.tipo as "Manutenção" | "Limpeza",
-    });
-    setMensagem("✅ Tarefa atualizada com sucesso!");
-    setTimeout(() => navigate("/pesquisa"), 1500);
+    try {
+      await api.put(`/tarefas/${form.id}`, form);
+      setMensagem("✅ Tarefa atualizada com sucesso!");
+      setTimeout(() => navigate("/pesquisa"), 1500);
+    } catch (error) {
+      console.error("Erro ao atualizar tarefa:", error);
+      setMensagem("❌ Erro ao atualizar tarefa.");
+    }
   };
 
   return (

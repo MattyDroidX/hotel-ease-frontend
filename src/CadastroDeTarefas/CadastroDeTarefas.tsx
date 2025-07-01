@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-import { useDados } from "../Context/DadosContext";
+import api from "../services/api";
 import logo from "../assets/logo-dark.png";
 import "./CadastroDeTarefas.css";
 
 export const CadastroDeTarefas: React.FC = () => {
-  const { adicionar, funcionarios } = useDados();
   const navigate = useNavigate();
+  const [funcionarios, setFuncionarios] = useState<any[]>([]);
 
   const [form, setForm] = useState({
     numero: "",
@@ -20,6 +19,17 @@ export const CadastroDeTarefas: React.FC = () => {
 
   const [erros, setErros] = useState<{ [campo: string]: string }>({});
   const [mensagem, setMensagem] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.get("/funcionarios")
+      .then(res => {
+        setFuncionarios(res.data.filter((f: any) => f.ativo));
+      })
+      .catch(err => {
+        console.error("Erro ao buscar funcionários", err);
+        alert("Erro ao carregar funcionários");
+      });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -39,18 +49,17 @@ export const CadastroDeTarefas: React.FC = () => {
     return Object.keys(novosErros).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validar()) return;
 
-    const novaTarefa = {
-      ...form,
-      id: uuidv4(),
-      tipo: form.tipo as "Manutenção" | "Limpeza",
-    };
-
-    adicionar(novaTarefa);
-    setMensagem("✅ Tarefa cadastrada com sucesso!");
-    setTimeout(() => navigate("/pesquisa"), 1500);
+    try {
+      await api.post("/tarefas", form);
+      setMensagem("✅ Tarefa cadastrada com sucesso!");
+      setTimeout(() => navigate("/pesquisa"), 1500);
+    } catch (error) {
+      console.error("Erro ao cadastrar tarefa", error);
+      setMensagem("❌ Erro ao cadastrar tarefa.");
+    }
   };
 
   return (

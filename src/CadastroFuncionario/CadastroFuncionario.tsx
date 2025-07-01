@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDados } from "../Context/DadosContext";
-import { v4 as uuidv4 } from "uuid";
+import api from "../services/api";
 import logo from "../assets/logo-dark.png";
 import "../CadastroDeTarefas/CadastroDeTarefas.css";
 
 export const CadastroFuncionario: React.FC = () => {
   const navigate = useNavigate();
-  const { adicionarFuncionario } = useDados();
 
   const [form, setForm] = useState({
     nome: "",
@@ -37,18 +35,19 @@ export const CadastroFuncionario: React.FC = () => {
     setErros({ ...erros, [e.target.name]: "" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validar()) return;
 
     try {
-      adicionarFuncionario({ id: uuidv4(), ...form, ativo: true });
+      await api.post("/funcionarios",{...form, ativo: true });
       setMensagem("✅ Funcionário cadastrado com sucesso!");
       setTimeout(() => {
         setMensagem(null);
         navigate("/funcionarios");
       }, 1500);
-    } catch {
+    } catch (error) {
+      console.error("Erro ao cadastrar funcionário.", error)
       setMensagem("❌ Erro ao cadastrar funcionário.");
     }
   };
