@@ -1,14 +1,17 @@
-import React, {useEffect, useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./PesquisaDeTarefas.css";
 import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo-dark.png";
+import { useFuncionarios } from "../Hooks/useFuncionarios";
+import { Tarefa } from "../Models/Tarefa";
 
 export const PesquisaDeTarefas: React.FC = () => {
   const navigate = useNavigate();
+  const [tarefas, setTarefas] = useState<Tarefa[]>([]);
+  const [resultados, setResultados] = useState<Tarefa[]>([]);
+  const funcionarios = useFuncionarios();
 
-  const [tarefas, setTarefas] = useState<any[]>([]);
-  const [funcionarios, setFuncionarios] = useState<any[]>([]);
   const [filtros, setFiltros] = useState({
     busca: "",
     funcionario: "",
@@ -17,10 +20,8 @@ export const PesquisaDeTarefas: React.FC = () => {
     dataHora: "",
   });
 
-  const [resultados, setResultados] = useState(tarefas);
 
   useEffect(() => {
-    // Buscar tarefas
     api.get("/tarefas")
       .then(res => {
         setTarefas(res.data);
@@ -30,26 +31,16 @@ export const PesquisaDeTarefas: React.FC = () => {
         console.error("Erro ao carregar tarefas:", err);
         alert("Erro ao carregar tarefas");
       });
-
-    api.get("/funcionarios")
-      .then(res => {
-        setFuncionarios(res.data.filter((f: any) => f.ativo));
-      })
-      .catch(err => {
-        console.error("Erro ao carregar funcionários:", err);
-      });
   }, []);
 
   const aplicarFiltros = () => {
-    const filtradas = tarefas.filter((t) => {
-      return (
+    const filtradas = tarefas.filter((t) =>
         (!filtros.busca || t.descricao.toLowerCase().includes(filtros.busca.toLowerCase())) &&
         (!filtros.funcionario || t.funcionario.toLowerCase().includes(filtros.funcionario.toLowerCase())) &&
         (!filtros.status || t.status === filtros.status) &&
         (!filtros.tipo || t.tipo === filtros.tipo) &&
         (!filtros.dataHora || t.dataHora.startsWith(filtros.dataHora))
       );
-    });
     setResultados(filtradas);
   };
 
@@ -147,7 +138,7 @@ export const PesquisaDeTarefas: React.FC = () => {
               <tr key={t.id}>
                 <td>{t.funcionario}</td>
                 <td>{t.numero}</td>
-                <td>{t.dataHora}</td>
+                <td>{new Date(t.dataHora).toLocaleString()}</td>
                 <td>
                   <span className={t.tipo === "Limpeza" ? "status-limpeza" : "status-manutencao"}>
                     {t.tipo.toUpperCase()}

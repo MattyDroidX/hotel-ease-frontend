@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import logo from "../assets/logo-dark.png";
 import "./CadastroDeTarefas.css";
+import { useFuncionarios } from "../Hooks/useFuncionarios";
+import { Tarefa } from "../Models/Tarefa";
 
 export const CadastroDeTarefas: React.FC = () => {
   const navigate = useNavigate();
-  const [funcionarios, setFuncionarios] = useState<any[]>([]);
+  const funcionarios = useFuncionarios();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<Omit<Tarefa, "id">>({
     numero: "",
     funcionario: "",
     descricao: "",
@@ -19,17 +21,6 @@ export const CadastroDeTarefas: React.FC = () => {
 
   const [erros, setErros] = useState<{ [campo: string]: string }>({});
   const [mensagem, setMensagem] = useState<string | null>(null);
-
-  useEffect(() => {
-    api.get("/funcionarios")
-      .then(res => {
-        setFuncionarios(res.data.filter((f: any) => f.ativo));
-      })
-      .catch(err => {
-        console.error("Erro ao buscar funcionários", err);
-        alert("Erro ao carregar funcionários");
-      });
-  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

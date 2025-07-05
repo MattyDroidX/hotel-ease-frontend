@@ -3,16 +3,7 @@ import "../PesquisaDeTarefas/PesquisaDeTarefas.css";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import logo from "../assets/logo-dark.png";
-
-interface Funcionario {
-  id: string;
-  nome: string;
-  sobrenome: string;
-  email: string;
-  telefone: string;
-  cargo: string;
-  ativo: boolean;
-}
+import { Funcionario } from "../Models/Funcionario";
 
 export const ListaFuncionarios: React.FC = () => {
   const navigate = useNavigate();
