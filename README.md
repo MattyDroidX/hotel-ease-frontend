@@ -112,7 +112,7 @@ Depois disso, siga os mesmos passos de instalação das dependências abaixo:
 
 ### Passos para preparar o projeto:
 
-1. Extraia o arquivo `.zip` que foi entregue.
+1. Extraia o arquivo `.zip/.rar` que foi entregue.
 2. Abra o terminal (no Windows, use o **Prompt de Comando** ou **PowerShell**).
 3. Navegue até a pasta onde você extraiu o projeto. Exemplo:
 
