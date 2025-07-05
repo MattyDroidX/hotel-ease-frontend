@@ -93,7 +93,7 @@ npm -v
 
 ## Baixando o projeto
 
-Você receberá um **arquivo .zip** com o código-fonte do projeto. Esse arquivo **não inclui a pasta `node_modules`**, pois ela é muito grande e será reconstruída localmente após a instalação das dependências.
+Você receberá um **arquivo .zip/.rar** com o código-fonte do projeto. Esse arquivo **não inclui a pasta `node_modules`**, pois ela é muito grande e será reconstruída localmente após a instalação das dependências.
 
 ### Alternativa via GitHub (opcional)
 
