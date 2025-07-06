@@ -3,20 +3,22 @@ import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo-dark.png";
 import api from "../services/api";
 import "./AtualizacaoDeTarefas.css";
+import { useFuncionarios } from "../Hooks/useFuncionarios";
 
 export const AtualizacaoDeTarefas: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const tarefa = location.state;
+  const funcionarios = useFuncionarios();
 
-  const [form, setForm] = useState({
-    id: tarefa?.id || "",
-    numero: tarefa?.numero || "",
-    funcionario: tarefa?.funcionario || "",
-    dataHora: tarefa?.dataHora || "",
-    descricao: tarefa?.descricao || "",
-    status: tarefa?.status || "Em Aberto",
-    tipo: tarefa?.tipo || "Manutenção",
+   const [form, setForm] = useState({
+    id:            tarefa?.id            ?? "",
+    numero:        tarefa?.numero        ?? "",
+    funcionarioId: tarefa?.funcionarioId ?? "",   
+    dataHora:      tarefa?.dataHora?.slice(0,16) ?? "",
+    descricao:     tarefa?.descricao     ?? "",
+    status:        tarefa?.status        ?? "Em Aberto",
+    tipo:          tarefa?.tipo          ?? "Manutenção",
   });
 
   const [erros, setErros] = useState<{ [campo: string]: string }>({});
@@ -32,7 +34,7 @@ export const AtualizacaoDeTarefas: React.FC = () => {
   const validar = () => {
     const novosErros: { [campo: string]: string } = {};
     if (!form.numero.trim()) novosErros.numero = "Número do quarto é obrigatório.";
-    if (!form.funcionario.trim()) novosErros.funcionario = "Funcionário é obrigatório.";
+    if (!form.funcionarioId.trim()) novosErros.funcionarioId = "Funcionário é obrigatório.";
     if (!form.dataHora) novosErros.dataHora = "Data e hora são obrigatórias.";
     if (!form.descricao.trim()) novosErros.descricao = "Descrição é obrigatória.";
     setErros(novosErros);
@@ -44,13 +46,21 @@ export const AtualizacaoDeTarefas: React.FC = () => {
     if (!validar()) return;
 
     try {
-      await api.put(`/tarefas/${form.id}`, form);
+      await api.put(`/tarefas/${form.id}`,  {
+      numero:        form.numero,
+      funcionarioId: form.funcionarioId,
+      descricao:     form.descricao,
+      dataHora:      form.dataHora,
+      status:        form.status,
+      tipo:          form.tipo,
+    });
       setMensagem("✅ Tarefa atualizada com sucesso!");
       setTimeout(() => navigate("/pesquisa"), 1500);
-    } catch (error) {
-      console.error("Erro ao atualizar tarefa:", error);
-      setMensagem("❌ Erro ao atualizar tarefa.");
-    }
+    } catch (err: any) {
+        const msg = err?.response?.data?.erro ?? "Erro ao atualizar tarefa.";
+        setMensagem("❌ " + msg);
+        console.error(err);
+      }
   };
 
   return (
@@ -78,15 +88,21 @@ export const AtualizacaoDeTarefas: React.FC = () => {
               />
             </div>
             <div className="input-group">
-              <label htmlFor="funcionario">Nome do Funcionário:</label>
-              <input
-                id="funcionario"
-                name="funcionario"
-                value={form.funcionario}
+              <label htmlFor="funcionarioId">Funcionário:</label>
+              <select
+                id="funcionarioId"
+                name="funcionarioId"
+                value={form.funcionarioId}
                 onChange={handleChange}
-                placeholder="Ex: João"
-                className={erros.funcionario ? "input-erro" : ""}
-              />
+                className={erros.funcionarioId ? "input-erro" : ""}
+              >
+                <option value="">Selecione</option>
+                {funcionarios.map(f => (
+                  <option key={f.id} value={f.id}>
+                    {f.text}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

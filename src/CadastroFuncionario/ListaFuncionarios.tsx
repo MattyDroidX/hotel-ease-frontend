@@ -19,8 +19,9 @@ export const ListaFuncionarios: React.FC = () => {
 useEffect(() => {
     api.get("/funcionarios")
       .then((res) => {
-        setFuncionarios(res.data);
-        setResultados(res.data);
+        const lista = res.data.dados || [];
+        setFuncionarios(lista);
+        setResultados(lista);
       })
       .catch((err) => {
         console.error("Erro ao carregar funcionários:", err);

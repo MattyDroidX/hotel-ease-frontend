@@ -7,9 +7,20 @@ export const useFuncionarios = () => {
 
   useEffect(() => {
     api.get("/funcionarios")
-      .then(res => setDados(res.data.filter((f: Funcionario) => f.ativo)))
-      .catch(err => console.error("Erro ao buscar funcionários:", err));
+      .then(res => setDados(res.data.dados ?? []))
+      .catch(err => {
+        console.error("Erro ao buscar funcionários:", err);
+        setDados([]);
+      });
   }, []);
 
-  return dados;
+  const options = dados
+    .filter(f => f.ativo)
+    .map(f => ({
+      id:   f.id,                    
+      text: `${f.nome} ${f.sobrenome}`
+  }));
+
+
+  return options;
 };

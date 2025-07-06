@@ -24,8 +24,9 @@ export const PesquisaDeTarefas: React.FC = () => {
   useEffect(() => {
     api.get("/tarefas")
       .then(res => {
-        setTarefas(res.data);
-        setResultados(res.data);
+        const tarefas = res.data.dados || [];
+        setTarefas(tarefas);
+        setResultados(tarefas);
       })
       .catch(err => {
         console.error("Erro ao carregar tarefas:", err);
@@ -35,11 +36,11 @@ export const PesquisaDeTarefas: React.FC = () => {
 
   const aplicarFiltros = () => {
     const filtradas = tarefas.filter((t) =>
-        (!filtros.busca || t.descricao.toLowerCase().includes(filtros.busca.toLowerCase())) &&
-        (!filtros.funcionario || t.funcionario.toLowerCase().includes(filtros.funcionario.toLowerCase())) &&
+        (!filtros.busca || t.descricao?.toLowerCase().includes(filtros.busca.toLowerCase())) &&
+        (!filtros.funcionario || t.funcionarioId === filtros.funcionario) &&
         (!filtros.status || t.status === filtros.status) &&
         (!filtros.tipo || t.tipo === filtros.tipo) &&
-        (!filtros.dataHora || t.dataHora.startsWith(filtros.dataHora))
+        (!filtros.dataHora || t.dataHora?.startsWith(filtros.dataHora))
       );
     setResultados(filtradas);
   };
@@ -89,9 +90,9 @@ export const PesquisaDeTarefas: React.FC = () => {
           onChange={(e) => setFiltros({ ...filtros, funcionario: e.target.value })}
         >
           <option value="">Todos os Funcionários</option>
-          {funcionarios.map((f) => (
-              <option key={f.id} value={`${f.nome} ${f.sobrenome}`}>
-                {f.nome} {f.sobrenome}
+          {funcionarios.map(opt => (
+              <option key={opt.id} value={opt.id}>
+                {opt.text}
               </option>
             ))}
         </select>
@@ -137,16 +138,16 @@ export const PesquisaDeTarefas: React.FC = () => {
             {resultados.map((t) => (
               <tr key={t.id}>
                 <td>{t.funcionario}</td>
-                <td>{t.numero}</td>
-                <td>{new Date(t.dataHora).toLocaleString()}</td>
+                <td>{t.numero || "-"}</td>
+                <td>{t.dataHora ? new Date(t.dataHora).toLocaleString() : "-"}</td>
                 <td>
                   <span className={t.tipo === "Limpeza" ? "status-limpeza" : "status-manutencao"}>
-                    {t.tipo.toUpperCase()}
+                    {t.tipo?.toUpperCase() || "-"}
                   </span>
                 </td>
                 <td>
                   <span className={`status-tag ${t.status?.toLowerCase().replace(/\s/g, "-")}`}>
-                    {t.status}
+                    {t.status || "-"}
                   </span>
                 </td>
                 <td>

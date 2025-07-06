@@ -4,62 +4,80 @@ import api from "../services/api";
 import logo from "../assets/logo-dark.png";
 import "./CadastroDeTarefas.css";
 import { useFuncionarios } from "../Hooks/useFuncionarios";
-import { Tarefa } from "../Models/Tarefa";
+
+type FormData = {
+  numero: string;
+  funcionarioId: string;                     
+  descricao: string;
+  dataHora: string;                          
+  status: "Em Aberto" | "Em Procedimento" | "Com Complicacoes" | "Concluído";
+  tipo: "Limpeza" | "Manutenção";
+};
 
 export const CadastroDeTarefas: React.FC = () => {
-  const navigate = useNavigate();
-  const funcionarios = useFuncionarios();
+  const navigate       = useNavigate();
+  const funcionarios   = useFuncionarios();
 
-  const [form, setForm] = useState<Omit<Tarefa, "id">>({
+  const [form,  setForm ]  = useState<FormData>({
     numero: "",
-    funcionario: "",
+    funcionarioId: "",
     descricao: "",
     dataHora: "",
     status: "Em Aberto",
-    tipo: "Manutenção",
+    tipo:   "Manutenção",
   });
 
-  const [erros, setErros] = useState<{ [campo: string]: string }>({});
-  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [erros,    setErros]    = useState<Record<string,string>>({});
+  const [mensagem, setMensagem] = useState<string|null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-    setErros({ ...erros, [name]: "" });
+    setErros(prev => ({ ...prev, [name]: "" }));
     setMensagem(null);
   };
 
-  const validar = () => {
-    const novosErros: { [campo: string]: string } = {};
-    if (!form.numero.trim()) novosErros.numero = "Número do quarto é obrigatório.";
-    if (!form.funcionario) novosErros.funcionario = "Funcionário é obrigatório.";
-    if (!form.descricao.trim()) novosErros.descricao = "Descrição é obrigatória.";
-    if (!form.dataHora) novosErros.dataHora = "Data e hora são obrigatórias.";
-
-    setErros(novosErros);
-    return Object.keys(novosErros).length === 0;
+  const validar = (): boolean => {
+    const novo: Record<string,string> = {};
+    if (!form.numero.trim())        novo.numero        = "Número é obrigatório.";
+    if (!form.funcionarioId)        novo.funcionarioId = "Selecione o funcionário.";
+    if (!form.descricao.trim())     novo.descricao     = "Descrição é obrigatória.";
+    if (!form.dataHora)             novo.dataHora      = "Data/hora obrigatória.";
+    setErros(novo);
+    return Object.keys(novo).length === 0;
   };
 
   const handleSubmit = async () => {
     if (!validar()) return;
-
     try {
       await api.post("/tarefas", form);
       setMensagem("✅ Tarefa cadastrada com sucesso!");
       setTimeout(() => navigate("/pesquisa"), 1500);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao cadastrar tarefa", error);
-      setMensagem("❌ Erro ao cadastrar tarefa.");
+      const msg = error?.response?.data?.erro ?? "❌ Erro ao cadastrar tarefa.";
+      setMensagem(msg);
     }
   };
 
   return (
     <div className="cadastro-container">
       <div className="header-area">
-        <img src={logo} alt="HotelEase Logo" className="logo-central" onClick={() => navigate("/")} />
+        <img
+          src={logo}
+          alt="HotelEase Logo"
+          className="logo-central"
+          onClick={() => navigate("/")}
+        />
         <div className="botao-duplo">
-          <button className="btn-voltar" onClick={() => navigate("/")}>Voltar à Home</button>
-          <button className="btn-voltar" onClick={() => navigate("/pesquisa")}>Pesquisa de Tarefas</button>
+          <button className="btn-voltar" onClick={() => navigate("/")}>
+            Voltar à Home
+          </button>
+          <button className="btn-voltar" onClick={() => navigate("/pesquisa")}>
+            Pesquisa de Tarefas
+          </button>
         </div>
       </div>
 
@@ -74,20 +92,19 @@ export const CadastroDeTarefas: React.FC = () => {
             onChange={handleChange}
             className={erros.numero ? "input-erro" : ""}
           />
+
           <select
-            name="funcionario"
-            value={form.funcionario}
+            name="funcionarioId"               
+            value={form.funcionarioId}
             onChange={handleChange}
-            className={erros.funcionario ? "input-erro" : ""}
+            className={erros.funcionarioId ? "input-erro" : ""}
           >
             <option value="">Selecione um Funcionário</option>
-            {funcionarios
-              .filter(f => f.ativo)
-              .map((f) => (
-                <option key={f.id} value={`${f.nome} ${f.sobrenome}`}>
-                  {f.nome} {f.sobrenome}
-                </option>
-              ))}
+            {funcionarios.map(opt => (
+              <option key={opt.id} value={opt.id}>
+                {opt.text}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -99,6 +116,7 @@ export const CadastroDeTarefas: React.FC = () => {
             onChange={handleChange}
             className={erros.descricao ? "input-erro" : ""}
           />
+
           <input
             type="datetime-local"
             name="dataHora"
@@ -119,36 +137,28 @@ export const CadastroDeTarefas: React.FC = () => {
 
         <div className="radio-group">
           <label>Tipo de Tarefa:</label>
-          <label>
-            <input
-              type="radio"
-              value="Manutenção"
-              name="tipo"
-              checked={form.tipo === "Manutenção"}
-              onChange={handleChange}
-            />
-            Manutenção
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="Limpeza"
-              name="tipo"
-              checked={form.tipo === "Limpeza"}
-              onChange={handleChange}
-            />
-            Limpeza
-          </label>
+          {["Manutenção", "Limpeza"].map(tipo => (
+            <label key={tipo}>
+              <input
+                type="radio"
+                name="tipo"
+                value={tipo}
+                checked={form.tipo === tipo}
+                onChange={handleChange}
+              />
+              {tipo}
+            </label>
+          ))}
         </div>
 
         <button className="btn-salvar" onClick={handleSubmit}>
           Salvar
         </button>
 
-        {/* Feedback de erro */}
+        {/* feedback de validação */}
         <div className="erros">
-          {Object.values(erros).map((erro, idx) => (
-            <div key={idx} className="erro">{erro}</div>
+          {Object.values(erros).map((e, i) => (
+            <div className="erro" key={i}>{e}</div>
           ))}
         </div>
 
