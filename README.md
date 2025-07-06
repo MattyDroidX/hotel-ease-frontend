@@ -99,13 +99,13 @@ Você receberá um **arquivo .zip/.rar** com o código-fonte do projeto. Esse ar
 
 Caso prefira, você também pode acessar diretamente o repositório no GitHub e clonar o projeto:
 
-1. Acesse o repositório: [https://github.com/MattyDroidX/prominas](https://github.com/MattyDroidX/prominas)
+1. Acesse o repositório: [https://github.com/MattyDroidX/hotel-ease-frontend](https://github.com/MattyDroidX/hotel-ease-frontend)
 2. Clique em **Code** e copie a URL (HTTPS)
 3. Abra seu terminal e digite:
 
 ```bash
-git clone https://github.com/MattyDroidX/prominas.git
-cd prominas/hotel-ease-frontend
+git clone https://github.com/MattyDroidX/hotel-ease-frontend.git
+cd hotel-ease/hotel-ease-frontend
 ```
 
 Depois disso, siga os mesmos passos de instalação das dependências abaixo:
